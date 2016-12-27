@@ -1,0 +1,77 @@
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="https://cdn.rawgit.com/remy/min.js/master/dist/%24.min.js"></script>
+</head>
+<body>
+  <p>Attempt to re-create te progressbar-button used by A Dark Room</p>
+  <p>I really like the progressbar-button interface used by A Dark Room. Here I try to recreate such button. See this page's source code for more info.</p>
+  <button id="test">kelik<span></span></button>
+  <br/>
+  <label>Set duration (in seconds): </label>
+  <input type="text" id="duration" />
+  <button id="set">Set</button>
+
+  <p>Usage:</p>
+  <pre>
+    setClikable($('#test'));
+    $('#test').func = function() { console.log('KLIK'); }
+  </pre>
+</body>
+<style type="text/css">
+.button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    position: relative;
+    border: none;
+}
+.button:disabled {
+    background-color: #eeeeee;
+    border: none;
+    color: #000;
+    border: 1px solid #555;
+}
+.button span {
+  position: relative;
+  background-color: #4CAF50;
+}
+</style>
+<script type="text/javascript">
+function setClikable(obj) {
+	obj.duration = 1000;
+  obj.step = 100;
+  obj.func = function() {}
+  obj.className += " button";
+
+	obj.on('click', function() {
+    obj.func();
+    obj.disabled = true;
+
+    var txt = obj.innerText;
+    var progress = 0;
+    var i = setInterval(function(){
+      progress += obj.step;
+      if (progress >= obj.duration) {
+      	clearInterval(i);
+        obj.innerText = txt;
+        obj.disabled = false;
+      } else
+        obj.innerText = txt + ' (' + Math.round((obj.duration-progress)/1000) + 's)'
+    }, obj.step);
+  });
+}
+
+setClikable($('#test'));
+$('#test').func = function() { console.log('KLIK'); }
+
+$('#set').on('click', function() {
+	$('#test').duration = $('#duration').value*1000;
+});
+</script>
+</html>
